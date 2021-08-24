@@ -12,6 +12,7 @@ const PizzaSchema = new Schema(
         createdAt: {
             type: Date,
             default: Date.now,
+            // (GETTERS) to return formated date from imported func. 
             get: (createdAtVal) => dateFormat(createdAtVal)
         },
         size: {
@@ -26,11 +27,11 @@ const PizzaSchema = new Schema(
             }
         ]
     },
-    // (VIRTUALS) tell the schema that it can use virtuals 
     {
         toJSON: {
+            // (VIRTUALS) tell the schema that it can use virtuals 
             virtuals: true,
-            // tell Mongoose model to use any getter function we specified
+            // (GETTERS) tell Mongoose model to use any getter function we specified
             getters: true
         },
         id: false
@@ -39,7 +40,8 @@ const PizzaSchema = new Schema(
 
 // (VIRTUALS) get total count of comments and replies on retrieval 
 PizzaSchema.virtual('commentCount').get(function() {
-    return this.comments.length;
+    // .reduce() method to tally up total of every comment and its replies
+    return this.comments.reduce((total, comment) => total + comment.replies.length + 1, 0);
 });
 
 // create the Pizza model using the PizzaSchema
